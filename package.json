@@ -1,0 +1,20 @@
+{
+  "name": "jest-demo",
+  "version": "1.0.0",
+  "description": "Demo the basic functionality and use cases for Jest",
+  "main": "index.js",
+  "scripts": {
+    "test": "Jest"
+  },
+  "author": "Paul Schneider",
+  "license": "ISC",
+  "dependencies": {
+    "@types/jest": "^25.1.3",
+    "axios": "^0.19.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.6",
+    "@babel/preset-env": "^7.8.6",
+    "babel-jest": "^25.1.0"
+  }
+}
