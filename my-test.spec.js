@@ -1,16 +1,72 @@
-import axios from "axios";
+test("string concatenation", () => {
+  const a = "tree";
+  const b = "house";
 
-// // Don't do this!
+  const c = a.concat(b);
 
-test("Test 1", () => {
-  function callback(data) {
-    expect(0).toBe(0);
-  }
-
-  setTimeout(callback, 5000);
+  expect(c).toBe("treehouse");
 });
 
-// Jest is opimistic. If no assertions, it will actually return true.
+test("toHaveProperty matcher", () => {
+  const car = {
+    model: "Accord",
+    manufacturer: {
+      name: "Honda",
+      origin: "Japan"
+    },
+    title: "Clean"
+  };
+
+  expect(car).toHaveProperty("title");
+  expect(car).toHaveProperty("manufacturer.origin", "Japan");
+});
+
+test("toMatchObject matcher", () => {
+  const car = {
+    model: "Accord",
+    manufacturer: {
+      name: "Honda",
+      origin: "Japan"
+    },
+    title: "Clean"
+  };
+
+  expect(car).toMatchObject({
+    model: "Accord",
+    manufacturer: { name: "Honda" }
+  });
+});
+
+// Testing equality
+
+test("primitive equality with toBe", () => {
+  const a = 10;
+  const b = 5 + 5;
+
+  expect(a).toBe(b);
+
+  const c = "foo bar";
+  const d = "foo" + " " + "bar";
+
+  expect(c).toBe(d);
+
+  const e = 0;
+  const f = "";
+
+  expect(e).not.toBe(f);
+});
+
+test("object and array equality with toEqual", () => {
+  const a = { name: "Bernie" };
+  const b = {};
+  b.name = "Bernie";
+
+  expect(a).toEqual(b);
+
+  expect(a).not.toBe(b); // Comparing they're references, which are not equal.
+});
+
+// Testing types
 
 // Asynchronous tests:
 
@@ -19,90 +75,87 @@ test("Test 1", () => {
 // Callbacks
 // If using callbacks to handle asyncronous behavior. setTimeout, onChange, etc..
 
-test("Test 2", done => {
+test("callbacks", done => {
   function callback(data) {
     try {
-      expect(0).toBeFalsy();
+      expect(1).toBeTruthy();
       done();
     } catch (error) {
       done(error);
     }
   }
-  expect(0).toBeFalsy();
-  expect(0).toBeFalsy();
 
   setTimeout(callback, 5000);
 });
 
-// if done is never called, the test will fail. ( timout error. If you want more descriptive error messageing, you need to pass)
+// if done is never called, the test will fail.
+// The jest description will be a generic timeout error. If you want more descriptive error messageing, you should call done with the error
 
-// Tests with Promises. If tests return a promise, Jest will resolve any asertions in your then callback. If the promise fails, the test will automatically fail
+// Promises.
+// In order to assert on promises, the test function should return that promise
+// Jest will resolve any asertions in your then or catch callback.
+// If the promise fails, the test will automatically fail
 
-// If you expect a promise to be rejected use the .catch method.
-//**** Make sure to add expect.assertions to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test.
 const myPromise = () => {
   return new Promise((resolve, reject) => {
     resolve("success");
   });
 };
 
-const myRejectPromise = () => {
+const myBadPromise = () => {
   return new Promise((resolve, reject) => {
     reject("error");
   });
 };
 
-const myAsyncFunc = async () => {
-  throw "error";
-};
-
-test("Test 3", () => {
-  //expect.assertions(1);
-  return myRejectPromise().catch(e => {
-    expect(e).toMatch("error");
+test("promises", () => {
+  return myPromise().then(result => {
+    expect(result).toBe("success");
   });
 });
 
 // Tests with Async/Await
+// Just as you would expect!
 
-test("Test 4", async () => {
+test("await functions", async () => {
   const data = await myPromise();
   expect(data).toBe("success");
 });
 
-test("Test 5", async () => {
+test("failing await functions", async () => {
   try {
-    await myAsyncFunc();
+    const data = await myBadPromise();
   } catch (e) {
-    expect(e).toMatch("error");
+    expect(e).toBe("error");
   }
 });
 
-describe("Test suite 1", () => {
+// Scoping and Organizing
+
+describe("Baseball test suite", () => {
   beforeAll(() => console.log("Before all tests in suite 1"));
   afterAll(() => console.log("After all tests in suite 1"));
 
-  it("Test 6", () => {
-    console.log("Test 6");
-    expect(1).toBeGreaterThan(0);
+  it("bat", () => {
+    console.log("Testing bat");
+    expect("bat").toEqual(expect.anything());
   });
 
-  it("Test 7", () => {
-    console.log("Test 7");
-    expect(2).toBeGreaterThan(1);
+  it("ball", () => {
+    console.log("Testing ball");
+    expect("ball").toEqual(expect.anything());
   });
 });
 
 // Mocking
 
-test("Test 8", () => {
+test("forEach", () => {
   const array = [1, 2, 3];
   const mockFunction = jest.fn(x => 2 * x);
 
   array.forEach(mockFunction);
 
   const calls = mockFunction.mock.calls;
-
   expect(calls).toHaveLength(3);
 
   const firstCall = calls[0];
@@ -111,51 +164,61 @@ test("Test 8", () => {
   expect(firstParam).toBe(1);
 
   const results = mockFunction.mock.results;
-
   expect(results[1].value).toBe(4);
 
   expect(mockFunction).toHaveReturned();
 
-  const mockFunctionReturnValue = jest.fn();
-
-  mockFunctionReturnValue.mockReturnValue("some value");
-
-  const returnValue = mockFunctionReturnValue();
+  // Mock return value
+  const anotherMock = jest.fn();
+  anotherMock.mockReturnValue("some value");
+  const returnValue = anotherMock();
 
   expect(returnValue).toBe("some value");
 });
 
+// jest.mock("./read-file");
+// import readFile from "./read-file";
+
+let readFile = filePath => {
+  return "dynamic file contents";
+};
+
+let concatFiles = (fileA, fileB) => {
+  const fileAContent = readFile(fileA);
+  const fileBContent = readFile(fileB);
+
+  return fileAContent + "\n" + fileBContent;
+};
+
+test("mocking readFile to test concatFiles", () => {
+  readFile = jest.fn();
+  readFile.mockReturnValue("foo");
+  const candidateProfile = concatFiles("Resume", "Cover Letter");
+  expect(candidateProfile).toBe("foo" + "\n" + "foo");
+});
+
 // Note. Call module mocking at file scope
-//jest.mock("axios");
+jest.mock("axios");
 
-test.skip("Test 9", () => {
-  const resp = "some data";
+test("mocking axios", () => {
+  const expectedResponse = "some data";
 
-  // Mocking a module
-  // All three mocking strategies would work. Which is best? Depends on the circumstance
+  // Mocking functions exposed by axios
+  // Two approaches:
 
-  // 1
-  //axios.get.mockResolvedValue(resp);
+  // 1. mock return value
+  axios.get.mockResolvedValue(expectedResponse);
 
-  // 2
-  //axios.get.mockImplementation(() => Promise.resolve(resp));
-  //axios.get.mockImplementationOnce(() => Promise.resolve(resp));
+  // 2. mock the entire implementation
+  //axios.get.mockImplementation(() => Promise.resolve(expectedResponse));
 
-  // 3
-  axios.get.mockImplementationOnce(() => Promise.resolve(resp));
-
-  return axios
-    .get("test url")
-    .then(resp => {
-      expect(resp).toBe("some data");
-    })
-    .catch(() => {
-      throw "Could not connect";
-    });
+  return axios.get("test url").then(response => {
+    expect(response).toBe(expectedResponse);
+  });
 });
 
 // Spy on
-test("Test 10", () => {
+test("spy on axios calls", () => {
   // To capture the function calls and their params (assert that certain side effects happend without actually replacing them)
   const getMock = jest.spyOn(axios, "get");
 
@@ -164,17 +227,15 @@ test("Test 10", () => {
   expect(getMock).toHaveBeenCalled();
 });
 
-test("Test 11", () => {
+test("spy on axios calls and mocking it's implementation", () => {
   // To mock the actual function implementation, and then restore it.
   const getMock = jest.spyOn(axios, "get");
+  const response = "Some data";
 
-  getMock.mockImplementation(() => 10);
-
-  expect(getMock()).toBe(10);
+  getMock.mockImplementation(() => response);
+  expect(getMock()).toBe(response);
 
   expect(getMock).toHaveBeenCalled();
 
   getMock.mockRestore();
-
-  console.log(axios.get(""));
 });
