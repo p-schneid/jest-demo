@@ -1,17 +1,20 @@
 import React from "react";
 import { fireEvent, render } from "@testing-library/react";
-import CheckboxWithLabel from "../CheckboxWithLabel";
-
 import "@testing-library/jest-dom";
 
+import CheckboxWithLabel from "./checkbox-with-label";
+
 it("CheckboxWithLabel changes the text after click", () => {
-  const { queryByLabelText, getByLabelText } = render(
+  const { container } = render(
     <CheckboxWithLabel labelOn="On" labelOff="Off" />
   );
 
-  expect(queryByLabelText(/off/i));
+  const label = container.querySelector("label");
+  const checkbox = container.querySelector("input");
 
-  fireEvent.click(getByLabelText(/off/i));
+  expect(label).toHaveTextContent("Off");
 
-  expect(queryByLabelText(/on/i)).toBe;
+  fireEvent.click(checkbox);
+
+  expect(label).toHaveTextContent("On");
 });

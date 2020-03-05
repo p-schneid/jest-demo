@@ -72,7 +72,7 @@ test("object and array equality with toEqual", () => {
 
 // 3 common patterns
 
-// Callbacks
+// 1. Callbacks
 // If using callbacks to handle asyncronous behavior. setTimeout, onChange, etc..
 
 test("callbacks", done => {
@@ -91,7 +91,7 @@ test("callbacks", done => {
 // if done is never called, the test will fail.
 // The jest description will be a generic timeout error. If you want more descriptive error messageing, you should call done with the error
 
-// Promises.
+// 2. Promises
 // In order to assert on promises, the test function should return that promise
 // Jest will resolve any asertions in your then or catch callback.
 // If the promise fails, the test will automatically fail
@@ -114,7 +114,7 @@ test("promises", () => {
   });
 });
 
-// Tests with Async/Await
+// 3. Async/Await
 // Just as you would expect!
 
 test("await functions", async () => {
@@ -130,7 +130,7 @@ test("failing await functions", async () => {
   }
 });
 
-// Organizing
+// Organization
 
 describe("Baseball test suite", () => {
   it("bat", () => {
@@ -145,17 +145,6 @@ describe("Baseball test suite", () => {
 });
 
 // Mocking
-
-test("Math.round", () => {
-  // Define params
-  const a = 1.1;
-
-  // Call function with params
-  const b = Math.round(a);
-
-  // Assert on the result;
-  expect(b).toBe(1);
-});
 
 test("forEach", () => {
   const array = [1, 2, 3];
@@ -185,9 +174,6 @@ test("forEach", () => {
   expect(returnValue).toBe("some value");
 });
 
-// jest.mock("./read-file");
-// import readFile from "./read-file";
-
 let readFile = filePath => {
   return "dynamic file contents";
 };
@@ -208,7 +194,7 @@ test("mocking readFile to test concatFiles", () => {
   expect(candidateProfile).toBe("foo" + "\n" + "foo");
 });
 
-// Note. Call module mocking at file scope
+// Mocking Modules
 
 import axios from "axios";
 jest.mock("axios");
