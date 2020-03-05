@@ -130,12 +130,9 @@ test("failing await functions", async () => {
   }
 });
 
-// Scoping and Organizing
+// Organizing
 
 describe("Baseball test suite", () => {
-  beforeAll(() => console.log("Before all tests in suite 1"));
-  afterAll(() => console.log("After all tests in suite 1"));
-
   it("bat", () => {
     console.log("Testing bat");
     expect("bat").toEqual(expect.anything());
@@ -149,6 +146,17 @@ describe("Baseball test suite", () => {
 
 // Mocking
 
+test("Math.round", () => {
+  // Define params
+  const a = 1.1;
+
+  // Call function with params
+  const b = Math.round(a);
+
+  // Assert on the result;
+  expect(b).toBe(1);
+});
+
 test("forEach", () => {
   const array = [1, 2, 3];
   const mockFunction = jest.fn(x => 2 * x);
@@ -159,6 +167,7 @@ test("forEach", () => {
   expect(calls).toHaveLength(3);
 
   const firstCall = calls[0];
+
   const firstParam = firstCall[0];
 
   expect(firstParam).toBe(1);
@@ -193,11 +202,15 @@ let concatFiles = (fileA, fileB) => {
 test("mocking readFile to test concatFiles", () => {
   readFile = jest.fn();
   readFile.mockReturnValue("foo");
-  const candidateProfile = concatFiles("Resume", "Cover Letter");
+
+  const candidateProfile = concatFiles("File A", "File B");
+
   expect(candidateProfile).toBe("foo" + "\n" + "foo");
 });
 
 // Note. Call module mocking at file scope
+
+import axios from "axios";
 jest.mock("axios");
 
 test("mocking axios", () => {
